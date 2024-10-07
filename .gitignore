@@ -1,0 +1,9 @@
+.idea
+.fleet
+.vscode
+.kotlin
+.gradle
+.DS_Store
+build/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
