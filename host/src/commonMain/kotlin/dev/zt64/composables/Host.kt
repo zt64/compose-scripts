@@ -14,6 +14,7 @@ import dev.snipme.highlights.model.SyntaxLanguage
 import dev.snipme.highlights.model.SyntaxThemes
 import dev.snipme.kodeview.view.material3.CodeEditText
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.isError
@@ -119,6 +120,11 @@ fun Host() {
                                                 "Script must contain a composable function named 'Content'"
                                             )
                                         }
+
+                                        // necessary to give compose time to render the new content
+                                        content = null
+
+                                        delay(20)
 
                                         content = {
                                             contentMethod(currentComposer, result.scriptInstance)
