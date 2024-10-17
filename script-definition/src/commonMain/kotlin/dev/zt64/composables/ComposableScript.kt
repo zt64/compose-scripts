@@ -44,7 +44,9 @@ internal class ComposableScriptConfiguration : ScriptCompilationConfiguration(
             "androidx.compose.foundation.*",
             "androidx.compose.foundation.layout.*",
             "androidx.compose.foundation.gestures.*",
-            "kotlin.math.*"
+            "kotlin.math.*",
+            "kotlin.random.*",
+            "kotlinx.coroutines.*"
         )
         jvm {
             dependenciesFromClassloader(
