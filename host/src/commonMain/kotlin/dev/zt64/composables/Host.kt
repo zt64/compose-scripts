@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.script.experimental.api.ResultWithDiagnostics
-import kotlin.script.experimental.api.isError
+import kotlin.script.experimental.api.ScriptDiagnostic
 import kotlin.script.experimental.api.valueOrThrow
 import kotlin.script.experimental.host.toScriptSource
 
@@ -40,7 +40,7 @@ fun Host() {
                 }
 
                 Column {
-                    var selectedSample by remember { mutableStateOf(Sample.GAME_2048) }
+                    var selectedSample by remember { mutableStateOf(Sample.DEPENDENCIES) }
 
                     var script by remember(selectedSample) {
                         mutableStateOf(selectedSample.code)
@@ -63,12 +63,12 @@ fun Host() {
                                 singleLine = true,
                                 label = { Text("Code Sample") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSamples) },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                colors = ExposedDropdownMenuDefaults.textFieldColors()
                             )
 
                             ExposedDropdownMenu(
                                 expanded = expandedSamples,
-                                onDismissRequest = { expandedSamples = false },
+                                onDismissRequest = { expandedSamples = false }
                             ) {
                                 Sample.entries.forEach { sample ->
                                     DropdownMenuItem(
@@ -82,7 +82,7 @@ fun Host() {
                                             selectedSample = sample
                                             expandedSamples = false
                                         },
-                                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                     )
                                 }
                             }
@@ -103,12 +103,14 @@ fun Host() {
                                             is ResultWithDiagnostics.Failure -> {
                                                 throw Exception(
                                                     resultWithDiag.reports
-                                                        .filter { it.isError() }
+                                                        .filter { it.severity >= ScriptDiagnostic.Severity.WARNING }
                                                         .joinToString("\n") { it.render() }
                                                 )
                                             }
 
-                                            is ResultWithDiagnostics.Success<*> -> resultWithDiag.valueOrThrow().returnValue
+                                            is ResultWithDiagnostics.Success<*> -> {
+                                                resultWithDiag.valueOrThrow().returnValue
+                                            }
                                         }
 
                                         val contentMethod = try {

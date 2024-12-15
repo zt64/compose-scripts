@@ -1,6 +1,8 @@
 @file:Repository("https://repo.maven.apache.org/maven2/")
-@file:DependsOn("io.github.qdsfdhvh:image-loader-jvm:1.8.3")
+@file:Repository("https://maven.google.com/")
+@file:DependsOn("io.github.qdsfdhvh:image-loader-desktop:1.9.0")
 
+import androidx.compose.runtime.Composable
 import com.seiko.imageloader.*
 
 @Composable
@@ -9,6 +11,6 @@ fun Content() {
 
     Image(
         painter = painter,
-        contentDescription = "image",
+        contentDescription = "image"
     )
 }
