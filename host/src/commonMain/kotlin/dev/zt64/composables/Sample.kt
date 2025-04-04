@@ -21,6 +21,10 @@ enum class Sample(val displayName: String, val code: String) {
         displayName = "Snake",
         code = getResourceAsText("/scripts/Snake.composable.kts")!!
     ),
+    GOL(
+        displayName = "Game of Life",
+        code = getResourceAsText("/scripts/GameOfLife.composable.kts")!!
+    ),
     DEPENDENCIES(
         displayName = "Dependencies",
         code = getResourceAsText("/scripts/Dependencies.composable.kts")!!

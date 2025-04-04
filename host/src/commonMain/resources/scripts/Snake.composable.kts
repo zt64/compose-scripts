@@ -1,10 +1,11 @@
+import androidx.compose.runtime.*
 import androidx.compose.ui.unit.IntOffset
 
 enum class Direction {
     UP,
     DOWN,
     LEFT,
-    RIGHT,
+    RIGHT
 }
 
 @Composable
@@ -57,15 +58,20 @@ fun Content() {
                 if (it.type != KeyEventType.KeyDown) return@onKeyEvent false
 
                 direction =
-                    if (it.key == Key.DirectionUp && direction != Direction.DOWN) Direction.UP
-                    else if (it.key == Key.DirectionDown && direction != Direction.UP) Direction.DOWN
-                    else if (it.key == Key.DirectionLeft && direction != Direction.RIGHT) Direction.LEFT
-                    else if (it.key == Key.DirectionRight && direction != Direction.LEFT) Direction.RIGHT
-                    else return@onKeyEvent false
+                    if (it.key == Key.DirectionUp && direction != Direction.DOWN) {
+                        Direction.UP
+                    } else if (it.key == Key.DirectionDown && direction != Direction.UP) {
+                        Direction.DOWN
+                    } else if (it.key == Key.DirectionLeft && direction != Direction.RIGHT) {
+                        Direction.LEFT
+                    } else if (it.key == Key.DirectionRight && direction != Direction.LEFT) {
+                        Direction.RIGHT
+                    } else {
+                        return@onKeyEvent false
+                    }
 
                 true
-            }
-            .fillMaxSize()
+            }.fillMaxSize()
             .focusRequester(focusRequester)
             .focusable()
             .clickable(onClick = focusRequester::requestFocus)
