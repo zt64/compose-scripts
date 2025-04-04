@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.1.0"
-coroutines = "1.9.0"
-compose = "1.7.1"
-android = "8.5.2"
+kotlin = "2.1.20"
+coroutines = "1.10.1"
+compose = "1.8.0-beta01"
+android = "8.7.3"
 buildconfig = "5.3.5"
-ktlintPlugin = "12.1.1"
-ktlint = "1.3.1"
+ktlintPlugin = "12.2.0"
+ktlint = "1.5.0"
 
 [libraries]
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -23,8 +23,8 @@ compose-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compose-co
 kodeview = "dev.snipme:kodeview:0.8.0"
 
 android-compat = "androidx.appcompat:appcompat:1.7.0"
-android-core = "androidx.core:core-ktx:1.13.1"
-android-activity = "androidx.activity:activity-compose:1.9.2"
+android-core = "androidx.core:core-ktx:1.15.0"
+android-activity = "androidx.activity:activity-compose:1.10.1"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
