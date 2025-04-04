@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.reflect.getDeclaredComposableMethod
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -88,14 +89,15 @@ fun Host() {
                             }
                         }
 
-                        var buttonEnabled by remember { mutableStateOf(true) }
+                        var buttonEnabled by rememberSaveable { mutableStateOf(true) }
                         val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
 
                         Button(
                             onClick = {
                                 coroutineScope.launch {
+                                    buttonEnabled = false
+
                                     try {
-                                        buttonEnabled = false
                                         val resultWithDiag =
                                             evalComposeScript(script.toScriptSource())
 
@@ -162,15 +164,13 @@ fun Host() {
                         }
                     }
 
-                    val highlights by remember(script) {
-                        mutableStateOf(
-                            Highlights
-                                .Builder()
-                                .code(script)
-                                .language(SyntaxLanguage.KOTLIN)
-                                .theme(SyntaxThemes.pastel(darkMode = true))
-                                .build()
-                        )
+                    val highlights = remember(script) {
+                        Highlights
+                            .Builder()
+                            .code(script)
+                            .language(SyntaxLanguage.KOTLIN)
+                            .theme(SyntaxThemes.pastel(darkMode = true))
+                            .build()
                     }
 
                     CodeEditText(

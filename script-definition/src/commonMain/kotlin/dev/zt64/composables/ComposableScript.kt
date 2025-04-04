@@ -10,6 +10,7 @@ import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmScriptDefinitionFromTemplate
 
 @KotlinScript(
+    displayName = "Composable Script",
     fileExtension = "composable.kts",
     compilationConfiguration = ComposableScriptConfiguration::class,
     // evaluationConfiguration = MainKtsEvaluationConfiguration::class,
@@ -20,6 +21,7 @@ abstract class ComposableScript
 internal class ComposableScriptConfiguration :
     ScriptCompilationConfiguration(
         body = {
+            isStandalone(false)
             ide {
                 acceptedLocations(ScriptAcceptedLocation.Everywhere)
             }
@@ -77,7 +79,7 @@ internal class ComposableScriptConfiguration :
             }
 
             compilerOptions(
-                "-language-version=1.9"
+                "-jvm-target=17"
             )
         }
     )
