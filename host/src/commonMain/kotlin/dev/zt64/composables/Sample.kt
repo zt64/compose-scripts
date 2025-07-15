@@ -28,5 +28,9 @@ enum class Sample(val displayName: String, val code: String) {
     DEPENDENCIES(
         displayName = "Dependencies",
         code = getResourceAsText("/scripts/Dependencies.composable.kts")!!
+    ),
+    BINARY_CLOCK(
+        displayName = "Binary Clock",
+        code = getResourceAsText("/scripts/BinaryClock.composable.kts")!!
     )
 }
