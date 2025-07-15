@@ -225,7 +225,7 @@ private fun OutputPane(
             .focusable(),
         contentAlignment = Alignment.Center
     ) {
-        when (val state = state) {
+        when (state) {
             UiState.Idle -> {
                 Text(
                     text = "No script loaded",
