@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.compose.jb) apply false
     alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.buildconfig) apply false
     alias(libs.plugins.ktlint) apply false
 }
 

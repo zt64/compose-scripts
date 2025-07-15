@@ -14,20 +14,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                fun implementation(
-                    dependencyNotation: Provider<MinimalExternalModuleDependency>,
-                    configure: ExternalModuleDependency.() -> Unit
-                ) {
-                    implementation(
-                        dependencyNotation.get().let {
-                            "${it.group}:${it.name}"
-                        },
-                        configure
-                    )
-                }
-
                 implementation(compose.runtime)
                 implementation(compose.material3)
+                implementation(compose.components.resources)
 
                 implementation(libs.kodeview)
 
@@ -38,7 +27,9 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation(compose.desktop.currentOs)
+                implementation(compose.desktop.currentOs) {
+                    exclude(group = "org.jetbrains.compose", module = "material")
+                }
                 implementation(libs.kotlin.coroutines.swing)
             }
         }

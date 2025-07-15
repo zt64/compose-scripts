@@ -7,7 +7,7 @@ fun main() {
     singleWindowApplication(
         title = "Compose scripting"
     ) {
-        window.minimumSize = Dimension(900, 900)
+        window.minimumSize = Dimension(1200, 900)
 
         Host()
     }
