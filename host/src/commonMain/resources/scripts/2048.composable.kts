@@ -1,16 +1,35 @@
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 val tileColors = mapOf(
-    0 to Color(0xFFCCC0B3),   // Empty Tile
-    2 to Color(0xFFEEE4DA),    // Tile 2
-    4 to Color(0xFFEDE0C8),    // Tile 4
-    8 to Color(0xFFF2B179),    // Tile 8
-    16 to Color(0xFFF59563),   // Tile 16
-    32 to Color(0xFFF67C5F),   // Tile 32
-    64 to Color(0xFFF65E3B),   // Tile 64
-    128 to Color(0xFFEDCF72),  // Tile 128
-    256 to Color(0xFFEDCC61),  // Tile 256
-    512 to Color(0xFFEDC850),  // Tile 512
+    0 to Color(0xFFCCC0B3), // Empty Tile
+    2 to Color(0xFFEEE4DA), // Tile 2
+    4 to Color(0xFFEDE0C8), // Tile 4
+    8 to Color(0xFFF2B179), // Tile 8
+    16 to Color(0xFFF59563), // Tile 16
+    32 to Color(0xFFF67C5F), // Tile 32
+    64 to Color(0xFFF65E3B), // Tile 64
+    128 to Color(0xFFEDCF72), // Tile 128
+    256 to Color(0xFFEDCC61), // Tile 256
+    512 to Color(0xFFEDC850), // Tile 512
     1024 to Color(0xFFEDC53F), // Tile 1024
-    2048 to Color(0xFFEDC22E)  // Tile 2048
+    2048 to Color(0xFFEDC22E) // Tile 2048
 )
 
 val BOARD_SIZE = 4
@@ -48,9 +67,11 @@ fun Content() {
                 board.randomAddTwoInPlace()
 
                 true
-            }
-            .background(color = Color.DarkGray)
-            .size(300.dp)
+            }.drawBehind {
+                drawRect(
+                    color = Color.DarkGray
+                )
+            }.size(300.dp)
             .focusRequester(focusRequester)
             .focusable()
             .clickable {
@@ -64,7 +85,7 @@ fun Content() {
                 drawLine(
                     Color.Black,
                     Offset(0f, rowIndex * tileSize),
-                    Offset(size.width, rowIndex * tileSize),
+                    Offset(size.width, rowIndex * tileSize)
                 )
             }
 
@@ -73,7 +94,7 @@ fun Content() {
                     drawLine(
                         Color.Black,
                         Offset(tileIndex * tileSize, 0f),
-                        Offset(tileIndex * tileSize, size.height),
+                        Offset(tileIndex * tileSize, size.height)
                     )
                 }
 
@@ -85,14 +106,16 @@ fun Content() {
                     )
 
                     // Measure the text size
-                    val textWidth = textMeasurer.measure(
-                        text = value.toString(),
-                        style = TextStyle.Default.copy(fontSize = 12.sp)
-                    ).size.width
-                    val textHeight = textMeasurer.measure(
-                        text = value.toString(),
-                        style = TextStyle.Default.copy(fontSize = 12.sp)
-                    ).size.height
+                    val textWidth = textMeasurer
+                        .measure(
+                            text = value.toString(),
+                            style = TextStyle.Default.copy(fontSize = 12.sp)
+                        ).size.width
+                    val textHeight = textMeasurer
+                        .measure(
+                            text = value.toString(),
+                            style = TextStyle.Default.copy(fontSize = 12.sp)
+                        ).size.height
 
                     // Calculate the top-left position to center the text
                     val textX = tileIndex * tileSize + (tileSize - textWidth) / 2

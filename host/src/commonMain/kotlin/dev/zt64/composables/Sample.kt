@@ -4,33 +4,40 @@ private fun getResourceAsText(name: String): String? {
     return Sample::class.java.getResourceAsStream(name)?.reader()?.readText()
 }
 
-enum class Sample(val displayName: String, val code: String) {
+enum class Sample(val displayName: String, val fileName: String) {
     COUNTER(
         displayName = "Counter",
-        code = getResourceAsText("/scripts/Counter.composable.kts")!!
+        fileName = "Counter"
     ),
     DRAGGING(
         displayName = "Dragging",
-        code = getResourceAsText("/scripts/Dragging.composable.kts")!!
+        fileName = "Dragging"
     ),
     GAME_2048(
         displayName = "2048",
-        code = getResourceAsText("/scripts/2048.composable.kts")!!
+        fileName = "2048"
     ),
     SNAKE(
         displayName = "Snake",
-        code = getResourceAsText("/scripts/Snake.composable.kts")!!
+        fileName = "Snake"
     ),
     GOL(
         displayName = "Game of Life",
-        code = getResourceAsText("/scripts/GameOfLife.composable.kts")!!
+        fileName = "GameOfLife"
     ),
     DEPENDENCIES(
         displayName = "Dependencies",
-        code = getResourceAsText("/scripts/Dependencies.composable.kts")!!
+        fileName = "Dependencies"
     ),
     BINARY_CLOCK(
         displayName = "Binary Clock",
-        code = getResourceAsText("/scripts/BinaryClock.composable.kts")!!
-    )
+        fileName = "BinaryClock"
+    ),
+    FRACTAL(
+        displayName = "Fractal",
+        fileName = "Fractal"
+    );
+
+    val code: String
+        get() = getResourceAsText("/scripts/$fileName.composable.kts")!!
 }

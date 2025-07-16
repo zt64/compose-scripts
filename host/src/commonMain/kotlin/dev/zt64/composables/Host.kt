@@ -52,7 +52,7 @@ fun Host() {
                     .padding(paddingValues)
             ) {
                 var state by remember { mutableStateOf<UiState>(UiState.Idle) }
-                var selectedSample by remember { mutableStateOf(Sample.DEPENDENCIES) }
+                var selectedSample by remember { mutableStateOf(Sample.FRACTAL) }
                 val compileScope = rememberCoroutineScope { Dispatchers.IO }
 
                 ControlsPane(
