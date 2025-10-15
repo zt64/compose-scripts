@@ -13,7 +13,7 @@ import kotlin.time.measureTimedValue
 
 @OptIn(FlowPreview::class)
 class ViewModel {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private var _hostState = MutableStateFlow<HostState>(HostState.Idle)
     val hostState = _hostState.asStateFlow()
@@ -36,6 +36,13 @@ class ViewModel {
                 .collectLatest {
                     compile()
                 }
+        }
+
+        scope.launch {
+            sample.collectLatest {
+                lastCompiledScript = it.code
+                _currentScript.emit(it.code)
+            }
         }
     }
 
@@ -99,7 +106,6 @@ class ViewModel {
     fun selectSample(sample: Sample) {
         scope.launch {
             _sample.emit(sample)
-            _currentScript.emit(sample.code)
             _hostState.emit(HostState.Idle)
         }
     }

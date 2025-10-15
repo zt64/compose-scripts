@@ -36,6 +36,10 @@ enum class Sample(val displayName: String, val fileName: String) {
     FRACTAL(
         displayName = "Fractal",
         fileName = "Fractal"
+    ),
+    GRAVITY(
+        displayName = "gravity",
+        fileName = "Gravity"
     );
 
     val code: String

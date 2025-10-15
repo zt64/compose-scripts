@@ -42,7 +42,9 @@ fun ControlsPane(
             }
 
             LaunchedEffect(script) {
-                onScriptChange(script)
+                if (state !is HostState.Idle) {
+                    onScriptChange(script)
+                }
             }
 
             Row(
