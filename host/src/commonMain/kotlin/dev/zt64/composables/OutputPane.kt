@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun OutputPane(
-    state: UiState,
+    state: HostState,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -21,13 +21,13 @@ fun OutputPane(
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            UiState.Idle -> {
+            HostState.Idle -> {
                 Text(
                     text = "No script loaded",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            is UiState.Compiling -> {
+            is HostState.Compiling -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -39,7 +39,7 @@ fun OutputPane(
                     )
                 }
             }
-            is UiState.Compiled -> {
+            is HostState.Compiled -> {
                 state.content()
 
                 Text(
@@ -54,7 +54,7 @@ fun OutputPane(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-            is UiState.Error -> {
+            is HostState.Error -> {
                 Surface(
                     modifier = Modifier
                         .widthIn(min = 200.dp, max = 700.dp)

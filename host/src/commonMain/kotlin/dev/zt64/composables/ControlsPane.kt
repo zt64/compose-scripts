@@ -19,10 +19,11 @@ import org.jetbrains.compose.resources.Font
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlsPane(
-    state: UiState,
+    state: HostState,
     sample: Sample,
     onSelectSample: (Sample) -> Unit,
-    onClickCompile: (String) -> Unit
+    onScriptChange: (String) -> Unit,
+    onClickCompile: () -> Unit
 ) {
     Surface(
         tonalElevation = 4.dp
@@ -40,6 +41,10 @@ fun ControlsPane(
                     .build()
             }
 
+            LaunchedEffect(script) {
+                onScriptChange(script)
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -52,7 +57,7 @@ fun ControlsPane(
                 ) {
                     TextField(
                         modifier = Modifier
-                            .menuAnchor(MenuAnchorType.PrimaryEditable)
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
                             .widthIn(min = 60.dp),
                         value = sample.displayName,
                         onValueChange = {},
@@ -88,8 +93,8 @@ fun ControlsPane(
                 Spacer(Modifier.weight(1f))
 
                 Button(
-                    onClick = { onClickCompile(script) },
-                    enabled = state !is UiState.Compiling
+                    onClick = { onClickCompile() },
+                    enabled = state !is HostState.Compiling
                 ) {
                     Text("Compile")
                 }
