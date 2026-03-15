@@ -16,13 +16,27 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.*
+import org.intellij.lang.annotations.Language
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.RuntimeEffect
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-enum class Shader(val shader: String) {
-    MANDELBROT(
+sealed class FractalShader(
+    val name: String,
+    @Language("glsl") val shader: String
+) {
+    abstract fun buildBuffer(
+        size: Size,
+        minX: Float,
+        maxX: Float,
+        minY: Float,
+        maxY: Float
+    ): ByteBuffer
+
+    data object Mandelbrot : FractalShader(
+        name = "Mandelbrot",
         shader = """
             uniform vec2 iResolution; // Use vec3 for resolution (width, height, pixelRatio)
             uniform float x_min, y_min, x_max, y_max;
@@ -94,8 +108,91 @@ enum class Shader(val shader: String) {
                 .putFloat(maxY)
                 .rewind()
         }
-    },
-    BURNING_SHIP(
+    }
+
+    data object Julia : FractalShader(
+        name = "Julia Set",
+        shader = """
+            uniform vec2 iResolution; // Use vec3 for resolution (width, height, pixelRatio)
+            uniform float x_min, y_min, x_max, y_max;
+            uniform float julia_real, julia_imag;
+        
+            const float N = 1024.0;
+            const float B = 256.0;
+            const float SS = 2.0;
+        
+            float random(in vec2 st) {
+                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+            }
+        
+            vec2 random2(in vec2 st) {
+                return vec2(random(st), random(st + vec2(1.0, 1.0)));
+            }
+        
+            vec3 pal(in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d) {
+                return a + b*cos(6.28318 * (c*t + d));
+            }
+        
+            float iterate(vec2 z, vec2 c) {
+                float iVal = 0.0;
+        
+                for (float i = 0.0; i < N; i++) {
+                    z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+                    if (dot(z, z) > (B*B)) {
+                        iVal = i;
+                        break;
+                    }
+                    iVal = i + 1.0;
+                }
+        
+                return iVal - log(log(dot(z, z)) / log(B)) / log(2.0);
+            }
+        
+            half4 main(vec2 fragCoord) {
+                vec2 R = iResolution.xy;
+                vec3 col = vec3(0.0);
+                vec2 c = vec2(julia_real, julia_imag);
+        
+                for(float i=0.0; i < SS; i++) {
+                    float x = mix(x_min, x_max, (fragCoord.x + random2(R+i).x) / R.x);
+                    float y = mix(y_min, y_max, (fragCoord.y + random2(R+i).y) / R.y);
+                    vec2 z = vec2(x, y);
+                    float sn = iterate(z, c) / N;
+                    col += pal(fract(2.0*sn + 0.5), vec3(0.5), vec3(0.5),
+                               vec3(1.0,1.0,1.0), vec3(0.0, 0.10, 0.2));
+                }
+        
+                return half4(col / SS, 1.0);
+            }
+        """.trimIndent()
+    ) {
+        var juliaReal = -0.7f
+        var juliaImag = 0.27f
+
+        override fun buildBuffer(
+            size: Size,
+            minX: Float,
+            maxX: Float,
+            minY: Float,
+            maxY: Float
+        ): ByteBuffer {
+            return ByteBuffer
+                .allocate(32)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .putFloat(size.width)
+                .putFloat(size.height)
+                .putFloat(minX)
+                .putFloat(minY)
+                .putFloat(maxX)
+                .putFloat(maxY)
+                .putFloat(juliaReal)
+                .putFloat(juliaImag)
+                .rewind()
+        }
+    }
+
+    data object BurningShip : FractalShader(
+        name = "Burning Ship",
         shader = """
             uniform vec2 iResolution;
             uniform float x_min, y_min, x_max, y_max;
@@ -164,23 +261,30 @@ enum class Shader(val shader: String) {
                 .putFloat(maxY)
                 .rewind()
         }
-    };
+    }
 
-    abstract fun buildBuffer(
-        size: Size,
-        minX: Float,
-        maxX: Float,
-        minY: Float,
-        maxY: Float
-    ): ByteBuffer
+    companion object {
+        fun values(): Array<FractalShader> {
+            return arrayOf(Mandelbrot, Julia, BurningShip)
+        }
+
+        fun valueOf(value: String): FractalShader {
+            return when (value) {
+                "MANDELBROT" -> Mandelbrot
+                "JULIA" -> Julia
+                "BURNING_SHIP" -> BurningShip
+                else -> throw IllegalArgumentException("No object Shader.$value")
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun Content() {
-    var activeShader by remember { mutableStateOf(Shader.BURNING_SHIP) }
-    val shaderEffect = remember(activeShader) {
-        RuntimeEffect.makeForShader(activeShader.shader)
+    var activeFractal by remember { mutableStateOf<FractalShader>(FractalShader.Julia) }
+    val shaderEffect = remember(activeFractal) {
+        RuntimeEffect.makeForShader(activeFractal.shader)
     }
     var minX by remember { mutableFloatStateOf(-2.5f) }
     var minY by remember { mutableFloatStateOf(-2.5f) }
@@ -237,7 +341,7 @@ fun Content() {
                     }
                 }
                 .drawBehind {
-                    val resolutionBuffer = activeShader.buildBuffer(size, minX, maxX, minY, maxY)
+                    val resolutionBuffer = activeFractal.buildBuffer(size, minX, maxX, minY, maxY)
 
                     val brush = ShaderBrush(
                         shaderEffect.makeShader(
@@ -272,9 +376,9 @@ fun Content() {
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Shader.entries.forEach { shader ->
+                listOf(FractalShader.Mandelbrot, FractalShader.Julia, FractalShader.BurningShip).forEach { shader ->
                     TextButton(
-                        onClick = { activeShader = shader }
+                        onClick = { activeFractal = shader }
                     ) {
                         Text(shader.name)
                     }
