@@ -14,14 +14,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
-                implementation(compose.components.resources)
-
-                implementation(libs.kodeview)
-
                 implementation(projects.scriptDefinition)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.resources)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.icons)
+                implementation(libs.kodeview)
                 implementation(libs.kotlin.scripting.jvm.host)
             }
         }
@@ -41,6 +39,9 @@ kotlin {
                 implementation(libs.android.compat)
                 implementation(libs.android.activity)
             }
+        }
+        all {
+            languageSettings.enableLanguageFeature("PropertyParamAnnotationDefaultTargetMode")
         }
     }
 }

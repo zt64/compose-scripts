@@ -1,7 +1,9 @@
 [versions]
-kotlin = "2.2.20"
+kotlin = "2.3.10"
 coroutines = "1.10.2"
-compose = "1.9.1"
+compose = "1.10.2"
+compose-material3 = "1.9.0"
+materialIcons = "1.7.3"
 android = "8.7.3"
 buildconfig = "5.3.5"
 ktlintPlugin = "13.1.0"
@@ -18,7 +20,17 @@ kotlin-scripting-mainKts = { module = "org.jetbrains.kotlin:kotlin-main-kts" }
 kotlin-scripting-dependencies = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies" }
 kotlin-scripting-dependencies-maven = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies-maven" }
 
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+compose-material3-windowSizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-material3" }
+compose-material3-adaptiveNavSuite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose-material3" }
+compose-splitPane = { module = "org.jetbrains.compose.components:components-splitpane-desktop", version.ref = "compose" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+compose-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIcons" }
+compose-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose" }
 compose-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable", version.ref = "kotlin" }
+
 
 kodeview = "dev.snipme:kodeview:0.8.0"
 
